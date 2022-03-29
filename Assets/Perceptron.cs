@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 [System.Serializable]
@@ -103,6 +104,28 @@ public class Perceptron : MonoBehaviour {
 			}
 	}
 
+	void SaveWeights()
+    {
+		string path = Application.dataPath + "/weights.txt";
+		var sr = File.CreateText(path);
+		sr.WriteLine(weights[0] + "," + weights[1] + "," + bias);
+		sr.Close();
+    }
+
+	void LoadWeights()
+    {
+		string path = Application.dataPath + "/weights.txt";
+        if (File.Exists(path))
+        {
+			var sr = File.OpenText(path);
+			string line = sr.ReadLine();
+			string[] w = line.Split(',');
+			weights[0] = System.Convert.ToDouble(w[0]);
+			weights[1] = System.Convert.ToDouble(w[1]);
+			bias = System.Convert.ToDouble(w[2]);
+			Debug.Log("Loading.");
+        }
+    }
 
 	void Start () {
 		InitialiseWeights();
@@ -114,6 +137,14 @@ public class Perceptron : MonoBehaviour {
         {
 			InitialiseWeights();
 			ts.Clear();
+        }
+        else if (Input.GetKeyDown("s"))
+        {
+			SaveWeights();
+        }
+        else if (Input.GetKeyDown("l"))
+        {
+			LoadWeights();
         }
 	}
 }
